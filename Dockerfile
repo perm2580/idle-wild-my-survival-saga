@@ -1,17 +1,16 @@
 FROM node:latest
 
-RUN mkdir -p /workspace
-
-WORKDIR /workspace
+WORKDIR /app
 
 RUN npm config set registry https://registry.npmmirror.com
 
-RUN cd /workspace
+# 先安装依赖，利用 Docker 层缓存
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install
 
-RUN git clone https://github.com/setube/idle-wild-my-survival-saga.git
+# 复制本地源码（含修改器改动）
+COPY . .
 
-RUN mv ./idle-wild-my-survival-saga/* . ; rm -rf ./idle-wild-my-survival-saga/
-
-RUN npm install -g pnpm ; pnpm install ; npx vite build
+RUN npx vite build
 
 CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "2543"]

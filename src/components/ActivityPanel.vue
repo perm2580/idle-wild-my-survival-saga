@@ -102,7 +102,7 @@ const startActivity = (recipeId) => {
     id: Date.now(),
     recipeId,
     name: recipe.name,
-    duration: activityDuration * 1000,
+    duration: gameStore.scaledDurationMs(activityDuration),
     completed: false
   }
   const gathering = gameStore.currentActivities.filter(a => a.recipeId.startsWith('gather_')).length
@@ -131,7 +131,8 @@ const getSkillEffect = (recipe) => {
   if (recipe.category === 'crafting' && gameStore.skillTreeEffects.craftingSpeed > 0) {
     activityDuration = Math.floor(activityDuration / (1 + gameStore.skillTreeEffects.craftingSpeed))
   }
-  return Math.max(1, activityDuration)
+  // 按当前主动操作倍速换算为实际耗时
+  return Math.max(1, Math.round(activityDuration / gameStore.playerActionSpeed))
 }
 
 const activityTimer = (activity) => {
@@ -682,8 +683,28 @@ const pendingActivities = computed(() =>
 }
 
 @media (max-width: 768px) {
+  .activity-panel {
+    padding: 10px;
+    height: auto;
+  }
+
+  /* 右列较窄，活动卡片改为单列，避免文字逐字换行 */
   .activity-list {
     grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 6px;
+  }
+
+  .activity-card {
+    padding: 8px;
+  }
+
+  .activity-details {
+    font-size: 0.8em;
+  }
+
+  .available-activities {
+    overflow-y: visible;
   }
 }
 </style>

@@ -446,9 +446,21 @@ const executeSpecialTrade = (trade) => {
 
 @media (max-width: 768px) {
 
+	/* 移动端商人与商品改为两列小卡片，避免每项独占一整行 */
 	.merchant-list,
 	.item-grid {
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
+	}
+
+	.merchant-card,
+	.trade-item {
+		padding: 8px;
+	}
+
+	.merchant-icon,
+	.item-icon {
+		font-size: 1.5rem;
 	}
 
 	.trade-resources {

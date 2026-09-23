@@ -90,7 +90,7 @@ const buildOrUpgrade = (building) => {
     id: `building_${building.id}_${Date.now()}`,
     buildingId: building.id,
     name: `${building.name} ${currentLevel ? '升级' : '建造'}`,
-    duration: levelConfig.buildTime * 1000, // 转换为毫秒
+    duration: gameStore.scaledDurationMs(levelConfig.buildTime), // 按全局倍速换算为毫秒
     level,
     cost: levelConfig.cost,
     completed: false
@@ -512,5 +512,23 @@ onUnmounted(() => {
 
 .build-button {
   margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .building-panel {
+    padding: 10px;
+    height: auto;
+  }
+
+  /* 移动端建筑队列改为两列小卡片，避免每项独占一整行 */
+  .building-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 6px;
+  }
+
+  .building-card {
+    padding: 8px;
+  }
 }
 </style>

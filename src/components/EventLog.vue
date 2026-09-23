@@ -5,48 +5,36 @@ const gameStore = useGameStore()
 </script>
 
 <template>
-  <h3>事件日志</h3>
-  <div class="log-entries">
+  <div class="event-log-panel">
+    <h3>事件日志</h3>
     <el-scrollbar max-height="500" class="event-log">
       <div v-for="(entry, index) in gameStore.eventLog" :key="index" class="log-entry">
-        <div class="log-timestamp">第{{ entry.timestamp }}</div>
-        <div class="log-message">{{ entry.message }}</div>
+        <span class="log-timestamp">{{ entry.timestamp }}：</span>
+        <span class="log-message" :title="entry.message">{{ entry.message }}</span>
       </div>
     </el-scrollbar>
   </div>
 </template>
 
 <style scoped>
-.event-log {
+.event-log-panel {
   background-color: var(--el-bg-color-overlay);
   border-radius: 4px;
   padding: 15px;
-  height: auto;
-  display: flex;
-  flex-direction: column;
 }
 
-.event-log h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
+.event-log-panel h3 {
+  margin: 0 0 10px;
+  font-size: 1em;
 }
 
-.log-entries {
-  flex: 1;
-  overflow-y: auto;
-  font-size: 0.9em;
-}
-
-.empty-log {
-  color: var(--el-text-color-secondary);
-  font-style: italic;
-  text-align: center;
-  margin-top: 20px;
-}
-
+/* 一条日志一行：时间：<日志信息> */
 .log-entry {
-  padding: 8px 0;
+  display: flex;
+  align-items: baseline;
+  padding: 6px 0;
   border-bottom: 1px solid var(--el-border-color-lighter);
+  font-size: 0.9em;
 }
 
 .log-entry:last-child {
@@ -54,12 +42,36 @@ const gameStore = useGameStore()
 }
 
 .log-timestamp {
-  font-size: 0.8em;
+  flex: none;
   color: var(--el-text-color-secondary);
-  margin-bottom: 3px;
 }
 
 .log-message {
-  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  /* 移动端压缩日志面板高度 */
+  .event-log-panel {
+    padding: 8px 10px;
+  }
+
+  .event-log-panel h3 {
+    margin: 0 0 6px;
+    font-size: 0.9em;
+  }
+
+  .log-entry {
+    padding: 4px 0;
+    font-size: 0.8em;
+  }
+
+  .event-log :deep(.el-scrollbar__wrap) {
+    max-height: 132px !important;
+  }
 }
 </style>

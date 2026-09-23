@@ -79,7 +79,7 @@ const researchTech = () => {
     id: `research_${tech.id}_${Date.now()}`,
     recipeId: `research_${tech.id}`,
     name: `${tech.name}`,
-    duration: activityDuration * 1000, // 转换为毫秒
+    duration: gameStore.scaledDurationMs(activityDuration), // 按全局倍速换算为毫秒
     completed: false,
     tech: tech.id
   }
@@ -569,8 +569,28 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .research-panel {
+    padding: 10px;
+    height: auto;
+  }
+
+  /* 移动端科技改为两列小卡片，避免每项独占一整行 */
   .tech-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .tech-card {
+    padding: 8px;
+  }
+
+  .tech-description {
+    font-size: 0.8em;
+    margin-bottom: 4px;
+  }
+
+  .tech-tree {
+    overflow-y: visible;
   }
 }
 </style>

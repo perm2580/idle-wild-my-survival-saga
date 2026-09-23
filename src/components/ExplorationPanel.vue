@@ -86,7 +86,7 @@ const startExploration = () => {
   if (gameStore.skillTreeEffects.gatheringEfficiency > 0) {
     duration = region.explorationTime * gameStore.skillTreeEffects.gatheringEfficiency
   }
-  duration = Math.max(1, duration) * 1000
+  duration = gameStore.scaledDurationMs(Math.max(1, duration))
   // 创建探索活动
   const explorationActivity = {
     id: `explore_${region.id}_${Date.now()}`,
@@ -655,10 +655,30 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .exploration-panel {
+    padding: 10px;
+    height: auto;
+  }
 
+  /* 移动端区域与探索队列改为两列小卡片，避免每项独占一整行 */
   .exploration-list,
   .region-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .exploration-card,
+  .region-card {
+    padding: 8px;
+  }
+
+  .region-description,
+  .region-details {
+    font-size: 0.78em;
+  }
+
+  .available-regions {
+    overflow-y: visible;
   }
 }
 </style>

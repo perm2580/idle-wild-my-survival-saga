@@ -191,4 +191,36 @@ initAchievements()
   color: var(--el-text-color-secondary);
   font-style: italic;
 }
+
+@media (max-width: 768px) {
+  .achievement-system {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  /* 移动端成就改为两列小方块，避免每项独占一整行 */
+  .achievement-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .achievement-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px;
+  }
+
+  .achievement-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.4rem;
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+
+  .achievement-description {
+    font-size: 0.8rem;
+  }
+}
 </style>

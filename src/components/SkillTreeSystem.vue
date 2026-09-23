@@ -55,7 +55,7 @@ const upgradeSkill = (skill) => {
     id: `skill_${skill.id}_${Date.now()}`,
     skillId: skill.id,
     name: `${skill.name} ${gameStore.unlockedSkills[skill.id] ? '升级' : '升级'}`,
-    duration: skill.duration * 1000, //升级时间
+    duration: gameStore.scaledDurationMs(skill.duration), // 按全局倍速换算升级时间
     cost: { exp: skill.cost.exp },
     currentSkillBranch: activeSkillBranch.value,
     completed: false
@@ -748,6 +748,26 @@ onUnmounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .skill-tree-system {
+    padding: 10px;
+    height: auto;
+  }
+
+  /* 移动端技能队列改为两列小卡片，避免每项独占一整行 */
+  .skill-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 6px;
+  }
+
+  .skill-card {
+    padding: 8px;
+  }
+
+  .skills-container {
+    overflow-y: visible;
+  }
+
   .skill-node {
     width: 95%;
     padding: 8px 12px;

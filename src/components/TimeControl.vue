@@ -8,14 +8,16 @@ const gameStore = useGameStore()
 const timeScaleOptions = [
   { label: '正常 (1x)', value: 1 },
   { label: '快速 (2x)', value: 2 },
-  { label: '极速 (5x)', value: 5 }
+  { label: '极速 (5x)', value: 5 },
+  { label: '超速 (10x)', value: 10 },
+  { label: '闪电 (20x)', value: 20 }
 ]
 
 // 当前选中的时间流逝速度
 const currentTimeScale = computed({
   get: () => gameStore.gameTime.timeScale,
   set: (value) => {
-    gameStore.gameTime.timeScale = value
+    gameStore.setClockSpeed(value)
     gameStore.addToEventLog(`时间流速调整为 ${value}x`)
   }
 })
@@ -107,12 +109,12 @@ const currentSeason = computed(() => {
         <span class="time">{{ formattedGameTime.time }}</span>
         <span class="period-indicator">{{ dayPeriod.icon }} {{ dayPeriod.name }}</span>
       </div>
-    </div>
-    <div class="time-scale-control">
-      <span class="time-scale-label">时间流速:</span>
-      <el-select v-model="currentTimeScale" size="small" :disabled="gameStore.gameState !== 'playing'">
-        <el-option v-for="option in timeScaleOptions" :key="option.value" :label="option.label" :value="option.value" />
-      </el-select>
+      <div class="time-scale-control">
+        <span class="time-scale-label">时间流速:</span>
+        <el-select v-model="currentTimeScale" size="small" :disabled="gameStore.gameState !== 'playing'">
+          <el-option v-for="option in timeScaleOptions" :key="option.value" :label="option.label" :value="option.value" />
+        </el-select>
+      </div>
     </div>
   </div>
 </template>
@@ -131,15 +133,24 @@ const currentSeason = computed(() => {
 
 .time-display {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.day-display,
+.day-display {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .time-of-day {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  align-items: flex-end;
 }
 
 .day-number {
@@ -189,13 +200,40 @@ const currentSeason = computed(() => {
 .time-scale-control {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 6px;
+  flex: none;
 }
 
 .time-scale-label {
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: var(--el-text-color-secondary);
-  width: 90px;
+  white-space: nowrap;
+}
+
+/* 防止下拉框被压缩到看不见文字 */
+.time-scale-control :deep(.el-select) {
+  width: 120px;
+}
+
+@media (max-width: 768px) {
+  /* 移动端进一步压缩时间面板的留白 */
+  .time-control {
+    gap: 4px;
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+
+  .day-number,
+  .time {
+    font-size: 1em;
+  }
+
+  .time-scale-control {
+    gap: 4px;
+  }
+
+  .time-scale-label {
+    font-size: 0.8em;
+  }
 }
 </style>

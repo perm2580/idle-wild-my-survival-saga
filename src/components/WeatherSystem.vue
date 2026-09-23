@@ -308,22 +308,21 @@ watch(() => [gameStore.gameTime.day, gameStore.gameTime.hour], () => checkWeathe
 
 <template>
   <div class="weather-system" :class="currentWeather.animation">
-    <div class="weather-display">
-      <div class="weather-icon">{{ currentWeather.icon }}</div>
-      <div class="weather-info">
-        <div class="weather-name">{{ currentWeather.name }}</div>
-        <div class="weather-effect">{{ currentWeather.effect }}</div>
+    <div class="weather-body">
+      <div class="weather-left">
+        <div class="weather-display">
+          <div class="weather-icon">{{ currentWeather.icon }}</div>
+          <div class="weather-info">
+            <div class="weather-name">{{ currentWeather.name }}</div>
+            <div class="weather-effect">{{ currentWeather.effect }}</div>
+          </div>
+        </div>
+        <div class="weather-forecast">
+          <span class="forecast-label">预计变化: </span>
+          <span class="forecast-time">{{ formattedNextChange }}</span>
+        </div>
       </div>
-    </div>
-    <div class="weather-forecast">
-      <span class="forecast-label">预计变化: </span>
-      <span class="forecast-time">{{ formattedNextChange }}</span>
-    </div>
-    <div class="weather-animation-container">
-      <div class="weather-animation-elements"></div>
-    </div>
-    <div class="current-season-indicator">
-      <div class="weather-effects">
+      <div class="weather-right">
         <div class="effects-list">
           <span v-if="currentWeather.effects && currentWeather.effects.gatheringEfficiency !== 1.0">
             采集效率: x{{ currentWeather.effects.gatheringEfficiency.toFixed(1) }}
@@ -343,6 +342,9 @@ watch(() => [gameStore.gameTime.day, gameStore.gameTime.hour], () => checkWeathe
         </div>
       </div>
     </div>
+    <div class="weather-animation-container">
+      <div class="weather-animation-elements"></div>
+    </div>
   </div>
 </template>
 
@@ -361,11 +363,34 @@ watch(() => [gameStore.gameTime.day, gameStore.gameTime.hour], () => checkWeathe
   transition: background-color 1s ease;
 }
 
+.weather-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  z-index: 2;
+}
+
+/* 左列：天气信息 */
+.weather-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 右列：效率信息 */
+.weather-right {
+  flex: 1;
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 .weather-display {
   display: flex;
   align-items: center;
   gap: 10px;
-  z-index: 2;
 }
 
 .weather-icon {
@@ -404,38 +429,18 @@ watch(() => [gameStore.gameTime.day, gameStore.gameTime.hour], () => checkWeathe
 
 .weather-forecast {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.9em;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+  font-size: 0.85em;
   color: var(--el-text-color-secondary);
-  margin-top: 5px;
-  z-index: 2;
-}
-
-.current-season-indicator {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 0.9em;
-  color: var(--el-text-color-secondary);
-  z-index: 2;
-}
-
-.weather-effects {
-  width: 100%;
 }
 
 .effects-list {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.effects-list span {
-  width: 33%;
-  margin-top: 5px;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85em;
+  color: var(--el-text-color-secondary);
 }
 
 .season-icon {
@@ -814,6 +819,40 @@ watch(() => [gameStore.gameTime.day, gameStore.gameTime.hour], () => checkWeathe
   100% {
     opacity: 0.3;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  /* 移动端压缩天气面板留白 */
+  .weather-system {
+    gap: 4px;
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+
+  .weather-icon {
+    font-size: 1.4rem;
+  }
+
+  .weather-name {
+    font-size: 1em;
+  }
+
+  .weather-body {
+    gap: 8px;
+  }
+
+  .weather-right {
+    padding-left: 8px;
+  }
+
+  .weather-forecast {
+    font-size: 0.72em;
+  }
+
+  .effects-list {
+    gap: 2px;
+    font-size: 0.72em;
   }
 }
 </style>

@@ -121,7 +121,14 @@ export const useGameStore = defineStore('game', {
       hour: 6, // 游戏从早上6点开始
       minute: 0,
       // 时间流逝速度，实际秒:游戏分钟
-      timeScale: 1, // 1秒 = 1分钟游戏时间
+      timeScale: 1, // 1秒 = 1分钟游戏时间（原模式：时钟、生存消耗、天气、事件等）
+      // 主动操作倍速（采集、建造、研究、探索、技能学习等）
+      activitySpeed: 1,
+      // 是否把该倍速作用于全局（勾选后两项倍速同步）
+      timeScaleGlobal: false,
+      activitySpeedGlobal: false,
+      // 修改器浮窗是否打开：打开期间强制按全局 1 倍速运行，避免修改数值时游戏失控
+      modifierOpen: false,
       // 游戏开始的时间戳
       startTime: Date.now(),
       // 当前游戏时间戳
@@ -186,8 +193,21 @@ export const useGameStore = defineStore('game', {
       }
       return true
     },
+    // 时钟/生存模拟的实际倍速（修改器打开时强制 1 倍速）
+    clockSpeed: (state) => (state.gameTime.modifierOpen ? 1 : (state.gameTime.timeScale > 0 ? state.gameTime.timeScale : 1)),
+    // 主动操作的实际倍速（修改器打开时强制 1 倍速）
+    playerActionSpeed: (state) => (state.gameTime.modifierOpen ? 1 : (state.gameTime.activitySpeed > 0 ? state.gameTime.activitySpeed : 1)),
   },
   actions: {
+    // 按当前主动操作倍速把「秒」换算成实际需要的毫秒（倍速越高，实际耗时越短）
+    scaledDurationMs(seconds) {
+      return Math.max(1, Math.round((seconds * 1000) / this.playerActionSpeed))
+    },
+    // 设置时钟倍速（任一全局锁开启时，两项倍速保持同步）
+    setClockSpeed(value) {
+      this.gameTime.timeScale = value
+      if (this.gameTime.timeScaleGlobal || this.gameTime.activitySpeedGlobal) this.gameTime.activitySpeed = value
+    },
     // 初始化游戏
     initGame() {
       // 重置游戏状态
@@ -222,6 +242,12 @@ export const useGameStore = defineStore('game', {
         if (saveData) {
           try {
             this.$state = decryptData(saveData)
+            // 兼容旧存档：补齐新增的倍速字段
+            if (this.gameTime.activitySpeed === undefined) this.gameTime.activitySpeed = this.gameTime.timeScale || 1
+            if (this.gameTime.timeScaleGlobal === undefined) this.gameTime.timeScaleGlobal = false
+            if (this.gameTime.activitySpeedGlobal === undefined) this.gameTime.activitySpeedGlobal = false
+            // 浮窗开关属于临时状态，读档时一律复位，避免存档里残留导致卡在 1 倍速
+            this.gameTime.modifierOpen = false
             this.resetSkillEffects()
             this.initBuildingEffects()
             this.fixSkills()

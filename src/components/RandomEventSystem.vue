@@ -274,4 +274,21 @@ onMounted(() => {
   padding: 10px 20px 15px;
   border-top: 1px solid var(--el-border-color-lighter);
 }
+
+@media (max-width: 768px) {
+  /* 移动端压缩事件指示器留白 */
+  .event-indicator {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+  }
+
+  .event-icon {
+    font-size: 20px;
+    margin-right: 6px;
+  }
+
+  .event-title {
+    font-size: 14px;
+  }
+}
 </style>

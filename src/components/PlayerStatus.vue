@@ -260,8 +260,46 @@ const checkLevelUp = () => {
 }
 
 @media (max-width: 768px) {
+	.player-status {
+		padding: 10px;
+	}
+
+	/* 窄列下健康/体力改为上下两行，各占满左列宽，避免文字换行 */
+	.player-stats {
+		margin-bottom: 12px;
+	}
+
+	.stat-item {
+		margin-bottom: 10px;
+	}
+
+	.stat-icon {
+		margin-right: 4px;
+		font-size: 1em;
+	}
+
+	.stat-value {
+		font-size: 0.8em;
+	}
+
+	.stat-status {
+		font-size: 0.72em;
+	}
+
 	.skill-grid {
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 6px;
+	}
+
+	.skill-item {
+		padding: 6px;
+	}
+
+	/* 窄列下生存信息改为上下排列，避免文字被拆行 */
+	.survival-info {
+		margin-top: 12px;
+		flex-direction: column;
+		gap: 6px;
 	}
 }
 </style>

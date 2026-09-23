@@ -15,6 +15,7 @@ import RandomEventSystem from './RandomEventSystem.vue'
 import TradingSystem from './TradingSystem.vue'
 import QuestSystem from './QuestSystem.vue'
 import SkillTreeSystem from './SkillTreeSystem.vue'
+import ModifierPanel from './ModifierPanel.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { saveAs } from 'file-saver'
 
@@ -517,7 +518,7 @@ const startGameTimer = () => {
 	if (gameTimerId.value) return
 	gameTimerId.value = setInterval(() => {
 		// 每秒推进游戏时间
-		if (gameState.value === 'playing') advanceTime(gameStore.gameTime.timeScale)
+		if (gameState.value === 'playing') advanceTime(gameStore.clockSpeed)
 	}, 1000)
 }
 
@@ -731,6 +732,7 @@ onUnmounted(() => {
 				<EventLog />
 			</div>
 		</div>
+		<ModifierPanel />
 		<el-dialog :model-value="gameStore.gameState === 'gameover'"
 			@update:model-value="gameStore.gameState = $event ? 'gameover' : 'playing'" title="游戏结束" width="30%"
 			:close-on-click-modal="false" :show-close="false">
@@ -775,17 +777,26 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+	.game-header {
+		/* 移动端让按钮区占满整行，便于按比例排布 */
+		display: block;
+	}
+
 	.game-controls {
-		justify-content: center;
+		/* 固定 4 列，8 个按钮正好两行放下 */
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 6px;
 	}
 
-	.button {
-		width: calc(33% - 12px);
-		margin-top: 10px;
-	}
-
-	.button:nth-child(4) {
-		margin-left: 0;
+	/* 顶部菜单按钮收窄（提高选择器权重，覆盖 element-plus 的按钮间距） */
+	.game-controls .button {
+		width: 100%;
+		min-width: 0;
+		margin: 0;
+		padding: 5px 2px;
+		font-size: 11px;
+		white-space: nowrap;
 	}
 }
 
@@ -820,8 +831,89 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+	.game-container {
+		/* 移动端改为整页滚动：避免三个面板各自嵌套滚动，把可操作区域压得过小 */
+		height: auto;
+		min-height: calc(100dvh - var(--app-header-height));
+		padding: 8px;
+	}
+
+	.game-header {
+		padding: 6px;
+		margin-bottom: 6px;
+	}
+
+	/* 移动端：日志/时间/天气占整行置顶，其余分为左右两列 */
 	.game-main {
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 42% minmax(0, 1fr);
+		gap: 8px;
+		overflow: visible;
+		align-items: start;
+	}
+
+	/* 把左右面板拆开，子面板直接参与分列 */
+	.left-panel,
+	.right-panel {
+		display: contents;
+	}
+
+	/* 允许网格项收缩，避免内容撑破列宽导致整页横向溢出 */
+	.game-main>*,
+	.game-main .event-log-panel,
+	.game-main .time-control,
+	.game-main .weather-system,
+	.game-main .player-status,
+	.game-main .resource-panel {
+		min-width: 0;
+	}
+
+	.game-panel {
+		padding: 10px;
+		overflow-y: visible;
+	}
+
+	/* 事件日志：压缩高度、占满整行置顶，不参与分列 */
+	.event-log-panel {
+		grid-column: 1 / -1;
+		grid-row: 1;
+	}
+
+	/* 时间、天气：整行显示（位于玩家状态上方） */
+	.time-control {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+
+	.weather-system {
+		grid-column: 1 / -1;
+		grid-row: 3;
+	}
+
+	/* 左列（窄）：玩家状态、资源 */
+	.player-status {
+		grid-column: 1;
+		grid-row: 4;
+		align-self: start;
+	}
+
+	.resource-panel {
+		grid-column: 1;
+		grid-row: 5;
+		align-self: start;
+	}
+
+	/* 右列（宽）：控制区，放主动活动选项 */
+	.center-panel {
+		grid-column: 2;
+		grid-row: 4 / 6;
+		align-self: stretch;
+	}
+
+	/* 随机事件指示器放到最后整行，避免占用分列单元格 */
+	.random-event-system {
+		grid-column: 1 / -1;
+		grid-row: 6;
 	}
 }
 
@@ -837,5 +929,13 @@ onUnmounted(() => {
 .full-height-tabs :deep(.el-tab-pane) {
 	height: 100%;
 	overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+	.full-height-tabs :deep(.el-tabs__content),
+	.full-height-tabs :deep(.el-tab-pane) {
+		height: auto;
+		overflow: visible;
+	}
 }
 </style>

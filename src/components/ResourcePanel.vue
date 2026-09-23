@@ -198,4 +198,31 @@ const refreshResourceData = () => {
   font-size: 0.9em;
   margin-bottom: 5px;
 }
+
+@media (max-width: 768px) {
+  .resource-section {
+    margin-bottom: 10px;
+  }
+
+  /* 移动端资源改为两列小方块，避免每项独占一整行 */
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .resource-item {
+    padding: 4px;
+  }
+
+  .resource-icon {
+    font-size: 1.1em;
+    width: 20px;
+    margin-right: 6px;
+  }
+
+  .resource-name {
+    font-size: 0.8em;
+    margin-bottom: 2px;
+  }
+}
 </style>
