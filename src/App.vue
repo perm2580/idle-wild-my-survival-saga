@@ -12,7 +12,7 @@ const originalAuthor = '谦君'
 const originalRepo = 'https://github.com/setube/idle-wild-my-survival-saga'
 const licenseName = '知识共享署名-非商业性使用 4.0 国际许可协议（CC BY-NC 4.0）'
 const licenseUrl = 'https://creativecommons.org/licenses/by-nc/4.0/'
-const modifyDate = '2026-09-24'
+const modifyDate = '2026-09-23'
 const aiAssistant = 'TraeCode'
 const aiModel = 'DeepSeek-V4.1-Flash'
 

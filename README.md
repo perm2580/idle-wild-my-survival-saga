@@ -1,6 +1,29 @@
 # 我的荒野放置求生记
 ![游戏截图](https://i.miji.bid/2025/04/04/0917160f7f1173616432b3dfab50fc85.png)
 
+## 来源声明
+
+> **本仓库是原项目的二次开发副本，并非原创作品。**
+>
+> 本项目「我的荒野放置求生记」由原作者 **谦君（Jun Qian）** 创作，原仓库地址：<https://github.com/setube/idle-wild-my-survival-saga>。
+> 本副本由 [perm2580](https://github.com/perm2580) 复制原项目后进行修改，仅用于个人学习与非商业性用途。
+> 原作品采用 **知识共享署名-非商业性使用 4.0 国际许可协议（CC BY-NC 4.0）** 授权，本副本同样遵循该协议，**严禁用于任何商业目的**。
+
+| 项目 | 信息 |
+| --- | --- |
+| 原作者 | 谦君（Jun Qian） |
+| 原仓库 | <https://github.com/setube/idle-wild-my-survival-saga> |
+| 本副本仓库 | <https://github.com/perm2580/idle-wild-my-survival-saga> |
+| 许可协议 | CC BY-NC 4.0（署名-非商业性使用 4.0 国际） |
+
+## 修改记录
+
+| 日期 | 版本 | 修改内容 |
+| --- | --- | --- |
+| 2026-09-23 | v1.092406 | 移动端自适应布局优化：顶部菜单按钮改为 4 列两行排布；整页改为两列布局（顶部整行显示事件日志/时间/天气，下方左列为玩家状态与资源、右列为活动控制区）；事件日志压缩高度并按「时间：<日志信息>」一条一行显示；时间流速与季节时间同行显示；天气面板改为左右两列；新增修改器面板等组件与构建产物 |
+
+> 说明：除上表所列改动外，其余代码、素材与游戏内容均来自原项目。
+
 ## 项目简介
 基于Vue3 + Pinia构建的生存模拟游戏，玩家需要在荒野中收集资源、建造设施、研究科技并应对天气变化。游戏包含完整的资源管理系统、技能成长系统和动态天气系统。
 
@@ -44,6 +67,9 @@ npm run build
 
 ## Docker 部署
 
+> 暂无修改版上传 docker，仍在调整中。
+
+<!-- 以下为原版 Docker 部署说明（镜像由原作者提供，暂不适用于本副本，保留备查）
 ### 构建镜像
 ```bash
 docker build -t ghcr.io/setube/idle-wild-my-survival-saga:latest .
@@ -56,6 +82,7 @@ docker pull ghcr.io/setube/idle-wild-my-survival-saga:latest
 ```bash
 docker run -d -p 2543:80 --name idle-wild-my-survival-saga ghcr.io/setube/idle-wild-my-survival-saga:latest
 ```
+-->
 
 
 ## 版权声明
@@ -77,6 +104,7 @@ docker run -d -p 2543:80 --name idle-wild-my-survival-saga ghcr.io/setube/idle-w
 
 声明：
 本作品是作者（谦君）的原创作品，项目源码地址：https://github.com/setube/idle-wild-my-survival-saga
+本仓库为上述原创作品的二次开发副本，遵循原作者所采用的 CC BY-NC 4.0 协议，署名归原作者所有，修改内容与日期见上方「修改记录」。
 本授权条款不得被视为或解释为对任何版权的放弃或其他限制。
 
 当您分享本作品的改编版本时，您必须：
