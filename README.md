@@ -78,17 +78,30 @@ npm run build
 ### 拉取镜像
 ```bash
 docker pull temp2580/iwms:latest
+# 或指定版本
+docker pull temp2580/iwms:v1.26.0924.17
 ```
 
 ### 运行容器
 ```bash
-docker run -d -p 2543:80 --name idle-wild-my-survival-saga temp2580/iwms:latest
+docker run -d -p 2543:2543 --name idle-wild-my-survival-saga temp2580/iwms:latest
+```
+启动后访问 http://localhost:2543
+
+### 本地构建（仅开发者）
+使用仓库根目录的构建脚本，自动读取 `package.json` 版本号并打双 tag（`latest` + `v<版本>`）：
+```bash
+./docker-build.sh              # 构建镜像
+./docker-build.sh --push       # 构建并推送到 Docker Hub
+./docker-build.sh --run        # 构建并启动容器（端口 2543）
+./docker-build.sh --push --run # 构建、推送并启动
 ```
 
-### 构建与推送（仅开发者）
+也可手动执行：
 ```bash
-docker build -t temp2580/iwms:latest .
+docker build -t temp2580/iwms:latest -t temp2580/iwms:v1.26.0924.17 .
 docker push temp2580/iwms:latest
+docker push temp2580/iwms:v1.26.0924.17
 ```
 
 
