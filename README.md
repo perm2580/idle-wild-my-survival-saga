@@ -68,22 +68,27 @@ npm run build
 
 ## Docker 部署
 
-> 暂无修改版上传 docker，仍在调整中。
+> ⚠️ **此 Docker 镜像为测试版**，可能随开发迭代随时废弃，不保证长期可用。
+>
+> 镜像仓库（Docker Hub）：`temp2580/iwms`
+>
+> 副标题：《idle-wild：my survival saga》/《闲散野外：我的生存传奇》
 
-<!-- 以下为原版 Docker 部署说明（镜像由原作者提供，暂不适用于本副本，保留备查）
-### 构建镜像
-```bash
-docker build -t ghcr.io/setube/idle-wild-my-survival-saga:latest .
-```
 ### 拉取镜像
 ```bash
-docker pull ghcr.io/setube/idle-wild-my-survival-saga:latest
+docker pull temp2580/iwms:latest
 ```
+
 ### 运行容器
 ```bash
-docker run -d -p 2543:80 --name idle-wild-my-survival-saga ghcr.io/setube/idle-wild-my-survival-saga:latest
+docker run -d -p 2543:80 --name idle-wild-my-survival-saga temp2580/iwms:latest
 ```
--->
+
+### 构建与推送（仅开发者）
+```bash
+docker build -t temp2580/iwms:latest .
+docker push temp2580/iwms:latest
+```
 
 
 ## 版权声明

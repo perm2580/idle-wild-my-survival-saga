@@ -21,8 +21,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 构建Docker镜像
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/idle-wild-my-survival-saga:latest .
+      - name: 构建Docker镜像（测试版）
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/iwms:latest .
 
-      - name: 推送到 Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/idle-wild-my-survival-saga:latest
+      - name: 推送到 Docker Hub（测试版）
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/iwms:latest
