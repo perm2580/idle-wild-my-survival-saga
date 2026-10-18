@@ -673,13 +673,15 @@ onUnmounted(() => {
 					</el-icon>
 					导入存档
 				</el-upload>
-				<el-button tag="a" target="_blank" href="https://github.com/setube/idle-wild-my-survival-saga" class="button"
+				<el-button tag="a" target="_blank" href="https://github.com/perm2580/idle-wild-my-survival-saga" class="button"
 					size="small">
 					<el-icon>
 						<Link />
 					</el-icon>
 					开源地址
 				</el-button>
+				<!-- 原版作者的QQ群:920930589 -->
+				<!--
 				<el-popover class="box-item" content="QQ群:920930589" placement="top-start">
 					<template #reference>
 						<el-button class="button" size="small">
@@ -690,6 +692,7 @@ onUnmounted(() => {
 						</el-button>
 					</template>
 				</el-popover>
+				-->
 			</div>
 		</div>
 		<div class="game-main">
