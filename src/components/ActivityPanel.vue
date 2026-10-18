@@ -492,13 +492,21 @@ const pendingActivities = computed(() =>
     return recipe && ['gathering', 'crafting'].includes(recipe.category)
   })
 )
+
+// 切换活动卡片紧凑/宽松模式
+const toggleLayoutMode = () => {
+  gameStore.settings.activityLayoutMode =
+    gameStore.settings.activityLayoutMode === 'compact' ? 'relaxed' : 'compact'
+  // 立即持久化，刷新后保留
+  gameStore.saveGame()
+}
 </script>
 <template>
   <el-scrollbar class="activity-panel">
     <div class="current-activities" v-if="currentActivities.length || pendingActivities.length">
       <h4>活动队列</h4>
       <el-scrollbar max-height="260" always>
-        <div class="activity-list">
+        <div class="activity-list" :class="`layout-${gameStore.settings.activityLayoutMode}`">
           <div v-for="activity in currentActivities" :key="activity.id" class="activity-card in-progress">
             <div class="activity-header">
               <div class="activity-name">{{ activity.name }}</div>
@@ -529,60 +537,71 @@ const pendingActivities = computed(() =>
       </el-scrollbar>
     </div>
     <div class="available-activities">
-      <h4>可用活动</h4>
+      <h4 class="available-activities-header">
+        <span>可用活动</span>
+        <el-button
+          size="small"
+          link
+          type="primary"
+          @click="toggleLayoutMode"
+          :title="gameStore.settings.activityLayoutMode === 'compact' ? '切换为宽松模式（按钮独占一行、详情更宽松）' : '切换为紧凑模式（按钮贴右侧、详情更紧凑）'"
+        >
+          {{ gameStore.settings.activityLayoutMode === 'compact' ? '切换宽松模式' : '切换紧凑模式' }}
+        </el-button>
+      </h4>
       <el-tabs v-model="activityTabs">
         <el-tab-pane label="采集" name="gathering">
-          <div class="activity-list">
-            <div v-for="recipe in gatheringActivities" :key="recipe.id" class="activity-card">
+          <div class="activity-list" :class="`layout-${gameStore.settings.activityLayoutMode}`">
+            <div v-for="recipe in gatheringActivities" :key="recipe.id"
+                 class="activity-card"
+                 :class="`layout-${gameStore.settings.activityLayoutMode}`">
               <div class="activity-header">
                 <div class="activity-name">{{ recipe.name }}</div>
                 <div class="activity-time">{{ getActivityDuration(getSkillEffect(recipe)) }}</div>
               </div>
               <div class="activity-details">
-                <div class="activity-resources">
-                  <div class="activity-inputs">消耗: {{ getInputText(recipe.inputs) }}</div>
-                  <div class="activity-outputs">产出: {{ getOutputText(recipe.outputs) }}</div>
+                <div class="activity-inputs">消耗: {{ getInputText(recipe.inputs) }}</div>
+                <div class="activity-requirements">需求: {{ getSkillRequirementText(recipe.skillRequired) }}</div>
+                <div class="activity-output-row">
+                  <span class="activity-outputs">产出: {{ getOutputText(recipe.outputs) }}</span>
+                  <span class="activity-requirements" v-if="getSkillEffectText(recipe) !== '无加成效果'">
+                    加成: {{ getSkillEffectText(recipe) }}
+                  </span>
+                  <div class="activity-actions">
+                    <el-button type="primary" size="small" @click="startActivity(recipe.id)"
+                      :disabled="!hasEnoughResources(recipe) || gameStore.gameState !== 'playing'">
+                      {{ hasEnoughResources(recipe) ? '开始' : '资源不足' }}
+                    </el-button>
+                  </div>
                 </div>
-                <div class="activity-requirements">
-                  需求: {{ getSkillRequirementText(recipe.skillRequired) }}
-                </div>
-                <div class="activity-requirements" v-if="getSkillEffectText(recipe) !== '无加成效果'">
-                  加成: {{ getSkillEffectText(recipe) }}
-                </div>
-              </div>
-              <div class="activity-actions">
-                <el-button type="primary" size="small" @click="startActivity(recipe.id)"
-                  :disabled="!hasEnoughResources(recipe) || gameStore.gameState !== 'playing'">
-                  {{ hasEnoughResources(recipe) ? '开始' : '资源不足' }}
-                </el-button>
               </div>
             </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="制作" name="crafting">
-          <div class="activity-list">
-            <div v-for="recipe in craftingActivities" :key="recipe.id" class="activity-card">
+          <div class="activity-list" :class="`layout-${gameStore.settings.activityLayoutMode}`">
+            <div v-for="recipe in craftingActivities" :key="recipe.id"
+                 class="activity-card"
+                 :class="`layout-${gameStore.settings.activityLayoutMode}`">
               <div class="activity-header">
                 <div class="activity-name">{{ recipe.name }}</div>
                 <div class="activity-time">{{ getActivityDuration(getSkillEffect(recipe)) }}</div>
               </div>
               <div class="activity-details">
-                <div class="activity-resources">
-                  <div class="activity-inputs">消耗: {{ getInputText(recipe.inputs) }}</div>
-                  <div class="activity-outputs">产出: {{ getOutputText(recipe.outputs) }}</div>
+                <div class="activity-inputs">消耗: {{ getInputText(recipe.inputs) }}</div>
+                <div class="activity-requirements">需求: {{ getSkillRequirementText(recipe.skillRequired) }}</div>
+                <div class="activity-output-row">
+                  <span class="activity-outputs">产出: {{ getOutputText(recipe.outputs) }}</span>
+                  <span class="activity-requirements" v-if="getSkillEffectText(recipe) !== '无加成效果'">
+                    加成: {{ getSkillEffectText(recipe) }}
+                  </span>
+                  <div class="activity-actions">
+                    <el-button type="primary" size="small" @click="startActivity(recipe.id)"
+                      :disabled="!hasEnoughResources(recipe) || gameStore.gameState !== 'playing'">
+                      {{ hasEnoughResources(recipe) ? '开始' : '资源不足' }}
+                    </el-button>
+                  </div>
                 </div>
-                <div class="activity-requirements">
-                  需求: {{ getSkillRequirementText(recipe.skillRequired) }}
-                </div>
-                <div class="activity-requirements" v-if="getSkillEffectText(recipe) !== '无加成效果'">
-                  加成: {{ getSkillEffectText(recipe) }}
-                </div>
-              </div>
-              <div class="activity-actions">
-                <el-button type="primary" size="small" @click="startActivity(recipe.id)"
-                  :disabled="!hasEnoughResources(recipe) || gameStore.gameState !== 'playing'">
-                  {{ hasEnoughResources(recipe) ? '开始' : '资源不足' }}
-                </el-button>
               </div>
             </div>
           </div>
@@ -619,32 +638,50 @@ const pendingActivities = computed(() =>
 
 .activity-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 15px;
   margin: 10px;
 }
 
+/* 宽松：卡片宽一些（默认 250px），一行摆得少 */
+.activity-list.layout-relaxed {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* 紧凑：卡片列最小宽度压到 ~200px，一行能摆两列 */
+.activity-list.layout-compact {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 6px;
+}
+
+/* —— 活动卡片：紧凑/宽松 双模式 ——
+   结构（两套模式相同）：
+     .activity-header    标题左 + 耗时右
+     .activity-details
+       .activity-inputs       消耗
+       .activity-requirements 需求
+       .activity-output-row   产出(可含加成) + 末尾 .activity-actions 按钮
+*/
 .activity-card {
   background-color: var(--el-bg-color);
   border-radius: 4px;
-  padding: 12px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
+  transition: transform 0.2s ease;
 }
 
 .activity-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 .activity-card.in-progress {
   border-left: 4px solid #409EFF;
 }
 
+/* —— 公共：头部 & 详情行 —— */
 .activity-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .activity-name {
@@ -652,29 +689,90 @@ const pendingActivities = computed(() =>
 }
 
 .activity-time {
-  font-size: 0.8em;
   color: var(--el-text-color-secondary);
 }
 
 .activity-details {
-  margin-bottom: 10px;
-  font-size: 0.9em;
-}
-
-.activity-resources {
-  margin-bottom: 5px;
-}
-
-.activity-inputs,
-.activity-outputs,
-.activity-requirements {
   color: var(--el-text-color-secondary);
-  margin-bottom: 3px;
+}
+
+.activity-output-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-output-row > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .activity-actions {
+  flex: 0 0 auto;
+}
+
+/* ===== 紧凑模式：目标高度 ~115px ===== */
+.activity-card.layout-compact {
+  padding: 8px 10px;
+}
+
+.activity-card.layout-compact .activity-header {
+  margin-bottom: 2px;
+  font-size: 0.92em;
+}
+
+.activity-card.layout-compact .activity-time {
+  font-size: 0.78em;
+}
+
+.activity-card.layout-compact .activity-details {
+  font-size: 0.82em;
+  line-height: 1.35;
+}
+
+.activity-card.layout-compact .activity-inputs,
+.activity-card.layout-compact .activity-requirements {
+  margin-bottom: 1px;
+}
+
+/* ===== 宽松模式（原版风格）：目标高度 ~150px ===== */
+.activity-card.layout-relaxed {
+  padding: 12px;
+}
+
+.activity-card.layout-relaxed .activity-header {
+  margin-bottom: 6px;
+}
+
+.activity-card.layout-relaxed .activity-time {
+  font-size: 0.8em;
+}
+
+.activity-card.layout-relaxed .activity-details {
+  font-size: 0.88em;
+  line-height: 1.55;
+}
+
+.activity-card.layout-relaxed .activity-inputs,
+.activity-card.layout-relaxed .activity-requirements {
+  margin-bottom: 2px;
+}
+
+/* —— 标题 —— */
+.available-activities-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 8px;
+}
+
+.available-activities-header span {
+  font-size: 0.95em;
+  font-weight: 600;
 }
 
 .available-activities {
@@ -682,25 +780,30 @@ const pendingActivities = computed(() =>
   overflow-y: auto;
 }
 
+/* —— 移动端：紧凑模式下详情允许换行 —— */
 @media (max-width: 768px) {
   .activity-panel {
     padding: 10px;
     height: auto;
   }
 
-  /* 右列较窄，活动卡片改为单列，避免文字逐字换行 */
   .activity-list {
     grid-template-columns: 1fr;
     gap: 8px;
     margin: 6px;
   }
 
-  .activity-card {
+  .activity-card.layout-compact {
     padding: 8px;
   }
 
-  .activity-details {
-    font-size: 0.8em;
+  .activity-card.layout-compact .activity-details {
+    font-size: 0.76em;
+    line-height: 1.3;
+  }
+
+  .activity-card.layout-compact .activity-output-row {
+    flex-wrap: wrap;
   }
 
   .available-activities {
