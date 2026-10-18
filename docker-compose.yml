@@ -1,0 +1,29 @@
+#version: '3'
+name: idle-wild-my-survival-saga
+services:
+  idle-wild-my-survival-saga:
+    container_name: 2543-IWMS
+    # container_name: iwms
+    image: temp2580/iwms:latest
+    # ⚠️ latest 会随每次发布自动指向最新版本，执行 docker compose pull && docker compose up -d 后会升级
+    # 若要固定版本避免意外升级，改用下面这行（版本号与 package.json 同步）
+    # image: temp2580/iwms:v1.26.0925.01
+    network_mode: bridge
+    restart: always
+    # restart: unless-stopped   # 若想"手动 stop 后不自动拉起"用这个；"崩了也会拉起"始终生效
+    stop_grace_period: 30s
+    logging:
+      options:
+        max-size: 1m
+        max-file: '1'
+    ports:
+      - "2543:2543"
+    # - 2543:2543
+    # 指定端口
+    # command: ["--host", "0.0.0.0", "--port", "自定义端口"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:2543/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

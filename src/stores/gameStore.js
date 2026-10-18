@@ -145,6 +145,7 @@ export const useGameStore = defineStore('game', {
       darkMode: false,
       soundEnabled: true,
       notificationsEnabled: true,
+      activityLayoutMode: 'compact', // 'compact' | 'relaxed' 活动卡片紧凑/宽松模式
     },
     // 事件日志
     eventLog: [],

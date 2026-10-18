@@ -21,4 +21,6 @@ COPY . .
 RUN npx vite build
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "2543"]
+# vite preview 收到 SIGTERM 会返回 143（Node 默认把退出码设成 128+signal_number）
+# 这里用 sh -c 包一层，把 143 视为"正常优雅退出"，返回 0；其他错误码原样透出
+CMD ["sh", "-c", "npx vite preview --host 0.0.0.0 --port 2543 || case $? in 143|0) exit 0;; *) exit $?;; esac"]
