@@ -22,6 +22,7 @@
 | --- | --- | --- |
 | 2026-09-23 06点 | v1.26.0924.06 | 移动端自适应布局优化：顶部菜单按钮改为 4 列两行排布；整页改为两列布局（顶部整行显示事件日志/时间/天气，下方左列为玩家状态与资源、右列为活动控制区）；事件日志压缩高度并按「时间：<日志信息>」一条一行显示；时间流速与季节时间同行显示；天气面板改为左右两列；新增修改器面板等组件与构建产物 |
 | 2026-09-24 17点 | v1.26.0924.17 | Docker 镜像由 ghcr.io 改为 Docker Hub temp2580/iwms（测试版）；修复容器手动停止报 137，加 dumb-init 处理 SIGTERM；补齐 CC BY-NC 4.0 署名声明与修改记录  经过测试，还是会有退出报错143，有空再去解决 |
+| 2026-09-25 01点 | v1.26.0925.01 | 界面调整：顶部工具栏新增原版作者 QQ 群注释；开源地址按钮改为指向本副本仓库；活动面板卡片支持紧凑模式 / 宽松模式一键切换（紧凑模式两列并排、卡片更扁，按钮贴产出信息行末尾），设置写入存档持久化；新增 docker-compose.yml；修复 Docker 容器手动停止显示 143 红字（加 sh -c 把 SIGTERM 退出码转为 0），restart 策略改为 always，新增 healthcheck |
 
 > 说明：除上表所列改动外，其余代码、素材与游戏内容均来自原项目。
 > 感谢AI助手 TraeCode 和模型 DeepSeek-v4.1-Flash 协助（说白了就是我提想法助手给我改代码🤣）。
@@ -79,7 +80,7 @@ npm run build
 ```bash
 docker pull temp2580/iwms:latest
 # 或指定版本
-docker pull temp2580/iwms:v1.26.0924.17
+docker pull temp2580/iwms:v1.26.0925.01
 ```
 
 ### 运行容器
@@ -99,9 +100,9 @@ docker run -d -p 2543:2543 --name idle-wild-my-survival-saga temp2580/iwms:lates
 
 也可手动执行：
 ```bash
-docker build -t temp2580/iwms:latest -t temp2580/iwms:v1.26.0924.17 .
+docker build -t temp2580/iwms:latest -t temp2580/iwms:v1.26.0925.01 .
 docker push temp2580/iwms:latest
-docker push temp2580/iwms:v1.26.0924.17
+docker push temp2580/iwms:v1.26.0925.01
 ```
 
 
