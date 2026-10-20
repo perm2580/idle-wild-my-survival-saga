@@ -24,6 +24,7 @@
 | 2026-09-24 17点 | v1.26.0924.17 | Docker 镜像由 ghcr.io 改为 Docker Hub temp2580/iwms（测试版）；修复容器手动停止报 137，加 dumb-init 处理 SIGTERM；补齐 CC BY-NC 4.0 署名声明与修改记录  经过测试，还是会有退出报错143，有空再去解决 |
 | 2026-09-25 01点 | v1.26.0925.01 | 界面调整：顶部工具栏新增原版作者 QQ 群注释；开源地址按钮改为指向本副本仓库；活动面板卡片支持紧凑模式 / 宽松模式一键切换（紧凑模式两列并排、卡片更扁，按钮贴产出信息行末尾），设置写入存档持久化；新增 docker-compose.yml；修复 Docker 容器手动停止显示 143 红字（加 sh -c 把 SIGTERM 退出码转为 0），restart 策略改为 always，新增 healthcheck |
 | 2026-10-20 19点 | v1.26.1020.19 | 彻底修复容器手动停止报 143 红字（此前 09-25 的 sh -c 末尾 case 捕获方案实际无效）：dumb-init 按进程组群发 SIGTERM，sh 自身被信号打死（退出 143），case 分支无机会执行；改用 trap 显式捕获 TERM/INT 并 exit 0，vite 放后台 wait，退出码稳定为 0，进程真崩溃仍原样透出；架构不变，历史镜像 tag 保留 |
+| 2026-10-20 19点 | v1.26.1020.20 | Docker 镜像多阶段构建优化：重写为 builder(node) 构建 + runtime(nginx:alpine) 静态托管，最终镜像剔除 node_modules / 源码 / 构建工具链，文件数降约 99%、体积由 GB 级降至数十 MB，彻底解决「容器内巨量小文件」问题；保留 dumb-init 干净退出（无 143）；容器内部端口由 2543 改为 80（外部仍访问 :2543）；outDir 仍为 docs/；旧镜像 tag 保留 |
 
 > 说明：除上表所列改动外，其余代码、素材与游戏内容均来自原项目。
 > 感谢AI助手 TraeCode 和模型 DeepSeek-v4.1-Flash 协助（说白了就是我提想法助手给我改代码🤣）。
@@ -81,12 +82,12 @@ npm run build
 ```bash
 docker pull temp2580/iwms:latest
 # 或指定版本
-docker pull temp2580/iwms:v1.26.1020.19
+docker pull temp2580/iwms:v1.26.1020.20
 ```
 
 ### 运行容器
 ```bash
-docker run -d -p 2543:2543 --name idle-wild-my-survival-saga temp2580/iwms:latest
+docker run -d -p 2543:80 --name idle-wild-my-survival-saga temp2580/iwms:latest
 ```
 启动后访问 http://localhost:2543
 
@@ -101,9 +102,9 @@ docker run -d -p 2543:2543 --name idle-wild-my-survival-saga temp2580/iwms:lates
 
 也可手动执行：
 ```bash
-docker build -t temp2580/iwms:latest -t temp2580/iwms:v1.26.1020.19 .
+docker build -t temp2580/iwms:latest -t temp2580/iwms:v1.26.1020.20 .
 docker push temp2580/iwms:latest
-docker push temp2580/iwms:v1.26.1020.19
+docker push temp2580/iwms:v1.26.1020.20
 ```
 
 

@@ -54,7 +54,7 @@ if [ "$DO_RUN" = true ]; then
   docker run -d \
     --name "${CONTAINER_NAME}" \
     --restart unless-stopped \
-    -p "${HOST_PORT}:2543" \
+    -p "${HOST_PORT}:80" \
     "${IMAGE_NAME}:latest"
 
   echo "==> 已启动，访问 http://localhost:${HOST_PORT}"
