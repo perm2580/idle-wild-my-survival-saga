@@ -1,5 +1,5 @@
 # 我的荒野放置求生记
-![游戏截图](https://i.miji.bid/2025/04/04/0917160f7f1173616432b3dfab50fc85.png)
+<img width="1466" height="883" alt="小Q截图-20261023193457" src="https://github.com/user-attachments/assets/50f9b512-1086-4978-bfe3-5c71e29920b1" />
 
 ## 来源声明
 
